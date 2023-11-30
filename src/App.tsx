@@ -1,25 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Container } from '@mui/material';
+import { useEffect } from 'react';
+import {
+  Error,
+  Loader,
+  SelectValute,
+  TableConverter,
+} from './components';
+import { useActions, useTypedSelector } from './hooks';
 
 function App() {
+  const { valuteRequestAsync } = useActions();
+  const { data, loading, error } = useTypedSelector(
+    (state) => state.valute
+  );
+
+  useEffect(() => {
+    valuteRequestAsync();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container
+      maxWidth="xl"
+      sx={{ mt: 4, display: 'flex', flexDirection: 'column', gap: 6 }}
+    >
+      {error ? (
+        <Error />
+      ) : loading ? (
+        <Loader />
+      ) : (
+        <>
+          <SelectValute data={data} />
+          <TableConverter />
+        </>
+      )}
+    </Container>
   );
 }
 
